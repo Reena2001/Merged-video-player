@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://vjs.zencdn.net/7.16.0/video-js.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+  <script src="https://vjs.zencdn.net/7.16.0/video.js"></script>
+  <title>Merged Video Player</title>
+  <style>
+    .video-container {
+      position: relative;
+      width: 100%;
+      height: 0;
+      padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    }
+    #merged-video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div class="video-container">
+    <video id="merged-video" class="video-js vjs-default-skin" controls preload="auto">
+      <source src="C:/Users/Admin/Documents/Task 6/video1.mp4" type="video/mp4">
+      <source src="C:/Users/Admin/Documents/Task 6/video2.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <script>
+    var player = videojs('merged-video', {
+      controlBar: {
+        playToggle: true, // Show the play/pause button
+        volumePanel: {
+          inline: false // Display the volume control panel outside the control bar
+        },
+        fullscreenToggle: true, // Show the fullscreen button
+        previousButton: true, // Enable previous button
+        nextButton: true // Enable next button
+      }
+    });
+
+    var sources = [
+      { src: 'C:/Users/Admin/Documents/Task 6/video1.mp4', type: 'video/mp4' },
+      { src: 'C:/Users/Admin/Documents/Task 6/video2.mp4', type: 'video/mp4' }
+    ];
+    var currentSourceIndex = 0;
+
+    player.on('ended', function() {
+      currentSourceIndex++;
+      if (currentSourceIndex < sources.length) {
+        // If there is another video in the sequence, play it
+        player.src(sources[currentSourceIndex]);
+        player.play();
+      } else {
+        // If all videos have been played, loop back to the beginning
+        currentSourceIndex = 0;
+        player.src(sources[currentSourceIndex]);
+        player.play();
+      }
+    });
+     // Add custom previous button
+var previousButton = document.createElement('button');
+previousButton.className = 'vjs-custom-button';
+previousButton.innerHTML = '<i class="fas fa-chevron-left"></i>'; // Font Awesome icon for left arrow
+previousButton.onclick = function() {
+  if (currentSourceIndex > 0) {
+    currentSourceIndex--;
+    player.src(sources[currentSourceIndex]);
+    player.play();
+  }
+};
+player.controlBar.el().appendChild(previousButton);
+
+// Add custom next button
+var nextButton = document.createElement('button');
+nextButton.className = 'vjs-custom-button';
+nextButton.innerHTML = '<i class="fas fa-chevron-right"></i>'; // Font Awesome icon for right arrow
+nextButton.onclick = function() {
+  if (currentSourceIndex < sources.length - 1) {
+    currentSourceIndex++;
+    player.src(sources[currentSourceIndex]);
+    player.play();
+  }
+};
+player.controlBar.el().appendChild(nextButton);
+
+</script>
+</body>
+</html>
